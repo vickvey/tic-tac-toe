@@ -23,9 +23,15 @@ export default function App() {
               </div>
             </>
           ) : (
-            // Not Playing Game: (playGame=false, winner=['O' or 'X'])
-            <div>
-              <div>Player <span>{winner} wins!</span></div>
+            // Not Playing Game: (playGame=false, winner=['O' or 'X' or 'Draw'])
+            <div className="results">
+              {winner !== 'Draw' ? (
+                // Game is Deciding: [winner='O' or 'X']
+                <div>Player <span>{winner} wins!</span></div>
+              ) : (
+                // Game is Drawn: [winner='Draw']
+                <div>Nobody Won! Game {winner} !</div>
+              )}
               <Button id="play-again-btn" content={'Play Again'} onClick={() => {
                 setWinner(null);
               }} />
@@ -53,8 +59,8 @@ function Header() {
 function Footer() {
   return (
     <footer>
-      <span>Developed by: <a href="https://github.com/vickvey">Vivek Kumar</a></span>
-      <span>Copyright 2024</span>
+      <span id="dev-by">Developed by: <a href="https://github.com/vickvey">Vivek Kumar</a></span>
+      <span id="copyright">Copyright 2024</span>
     </footer>
   )
 }
@@ -89,84 +95,6 @@ Game.propTypes = {
   setWinner: PropTypes.func.isRequired
 }
 
-/// TODO: Complete this later
-// function Game({ setPlayGame, setWinner }) {
-//   const PLAYER_ENUM = {
-//     PLAYER_1: 'O',
-//     PLAYER_2: 'X'
-//   };
-
-//   const [turn, setTurn] = useState('O');
-//   const [boardState, setBoardState] = useState(Array(9).fill(null)); // Board State Array 0-8
-
-//   // Event handlers
-//   function handleBoardCellClick(index) {
-//     // Prevent any interaction after game is over
-//     if (boardState[index] !== null || checkWinnerForBoard()) return;
-
-//     const newBoardState = boardState.map((prevVal, idx) => (idx === index ? turn : prevVal));
-
-//     setBoardState(newBoardState);
-
-//     const haveWinner = checkWinnerForBoard(newBoardState);
-//     if (haveWinner) {
-//       // Set the winner
-//       setWinner(haveWinner);
-//       // End the game after a winner is found
-//       setPlayGame(false);
-//       return;
-//     }
-
-//     setTurn(turn => turn === PLAYER_ENUM.PLAYER_1 ? PLAYER_ENUM.PLAYER_2 : PLAYER_ENUM.PLAYER_1);
-//   }
-
-//   // Helper functions
-//   function checkWinnerForBoard() {
-//     const lines = [
-//       [0, 1, 2], [3, 4, 5], [6, 7, 8],  // horizontal
-//       [0, 3, 6], [1, 4, 7], [2, 5, 8],  // vertical
-//       [0, 4, 8], [2, 4, 6]              // diagonal
-//     ];
-
-//     for (let i = 0; i < lines.length; i++) {
-//       const [a, b, c] = lines[i];
-//       // Check if all three positions are filled and are equal
-//       if (boardState[a] && boardState[a] === boardState[b] && boardState[a] === boardState[c]) {
-//         return boardState[a]; // Returns the player ('X' or 'O') who won
-//       }
-//     }
-//     return null; // No winner yet
-//   }
-
-//   // function countCellsFilled() {
-//   //   return boardState.reduce((prev, curr, cellIdx) => {
-//   //     if (boardState[cellIdx] === null) return prev + 1;
-//   //     return prev;
-//   //   }, 0);
-//   // }
-
-//   const currentWinner = checkWinnerForBoard(boardState);
-//   return (
-//     <div className="game-play">
-//       <div className="turn-info">
-//         <div>You are playing with symbol <span id="turn-text">{turn}</span></div>
-//         <div>Please mark your cell!</div>
-//       </div>
-//       <div className="game-board">
-//         {boardState.map((cellValue, index) => (
-//           <BoardCell
-//             id={index}  // This is the prop that you can access in the callback
-//             key={index} // The key is used internally by React, you can't access it directly
-//             onClick={() => handleBoardCellClick(index)} // Pass `index` as argument to the callback
-//             content={cellValue === null ? ' ' : cellValue}
-//             disabled={currentWinner !== null}
-//           />
-//         ))}
-//       </div>
-//     </div>
-//   )
-// }
-
 function Game({ setPlayGame, setWinner }) {
   const PLAYER_ENUM = {
     PLAYER_1: 'O',
@@ -175,6 +103,7 @@ function Game({ setPlayGame, setWinner }) {
 
   const [turn, setTurn] = useState('O');
   const [boardState, setBoardState] = useState(Array(9).fill(null));
+  const [cellsFilled, setCellsFilled] = useState(0);
 
   // Helper functions
   function checkWinnerForBoard(board) {
@@ -197,25 +126,37 @@ function Game({ setPlayGame, setWinner }) {
   function handleBoardCellClick(index) {
     // Prevent any interaction after game is over
     if (boardState[index] !== null || checkWinnerForBoard(boardState)) return;
-
     const newBoardState = boardState.map((prevVal, idx) =>
       idx === index ? turn : prevVal
     );
 
+    // Updating the board position
     setBoardState(newBoardState);
+    setCellsFilled(cellsFilled + 1);
 
     const winner = checkWinnerForBoard(newBoardState);
+    if (cellsFilled === 8) {
+      // Check if winner is getting decided on next move or not
+      if (!checkWinnerForBoard(newBoardState)) {
+        setWinner('Draw');
+        setPlayGame(false);
+        return;
+      }
+    }
+
     if (winner) {
       setWinner(winner);
       setPlayGame(false);
       return;
     }
-
     setTurn(turn => turn === PLAYER_ENUM.PLAYER_1 ? PLAYER_ENUM.PLAYER_2 : PLAYER_ENUM.PLAYER_1);
   }
 
   const currentWinner = checkWinnerForBoard(boardState);
 
+  console.clear();
+  console.log("currentWinner: ", currentWinner);
+  console.log("cellsFilled", cellsFilled);
   return (
     <div className="game-play">
       <div className="turn-info">

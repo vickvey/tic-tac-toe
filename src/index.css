@@ -9,6 +9,7 @@
 }
 
 body {
-  display: flex;
-  justify-content: center;
+  font-family: Arial, sans-serif;
+  background-color: var(--light-blush-pink);
+  color: var(--deep-purple);
 }
