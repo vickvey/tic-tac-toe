@@ -18,6 +18,9 @@ export default function App() {
               <div className="rules">
                 <p>Tic-Tac-Toe is a two-player game played on a 3x3 grid. One player uses &quot;X&quot; and the other uses &quot;O&quot;. Players take turns placing their symbol in an empty BoardCell on the grid, with the goal of being the first to get three of their symbols in a row, either horizontally, vertically, or diagonally. The game ends when a player wins by completing a row, or when all BoardCells are filled, resulting in a draw if no player wins.</p>
               </div>
+              <div className="special-note" style={{ color: "red", marginBottom: "0.1rem" }}>
+                Game AI is still in development process. In the meantime, you can play with your freind. Enjoy!!
+              </div>
               <div>
                 <Button id="play-game-btn" content={'Play Game'} onClick={() => setPlayGame(!playGame)} />
               </div>
