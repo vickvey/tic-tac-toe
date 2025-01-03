@@ -1,0 +1,38 @@
+.app {
+    margin: 5rem;
+    display: grid;
+    place-items: center;
+}
+
+main {
+    margin: 3rem 0;
+    display: grid;
+    place-items: center;
+    /* padding: 1rem 0; */
+}
+
+.game-play {
+    display: grid;
+    place-items: center;
+}
+
+.game-play .turn-info {
+    margin: 2rem;
+}
+
+#turn-text {
+    font-size: 2rem;
+}
+
+.game-board {
+    display: grid;
+    place-items: center;
+    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.board-cell {
+    margin: 0.2rem;
+    padding: 2rem;
+    border-radius: 0.5rem;
+}
